@@ -1,11 +1,9 @@
-/**
- * This file is just a silly example to show everything working in the browser.
- * When you're ready to start on your site, clear the file. Happy hacking!
- **/
+import { Application } from '@pixi/app';
 
-import confetti from 'canvas-confetti';
+const app = new Application({
+  width: 100,
+  height: 100,
+  view: document.getElementById('canvas'),
+});
 
-confetti.create(document.getElementById('canvas'), {
-  resize: true,
-  useWorker: true,
-})({ particleCount: 200, spread: 200 });
+//document.body.appendChild(app.view);
