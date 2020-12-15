@@ -1,6 +1,12 @@
-# New Project
+# pixi-snowpack-blank
 
 > ✨ Bootstrapped with Create Snowpack App (CSA).
+
+> ✨ Added pixi.js ^5.3.4 dependency
+
+> ✨ Added graphics - squares, circle, hexagons
+
+> ✨ Added mouse and keyboard interactions
 
 ## Available Scripts
 
