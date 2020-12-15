@@ -10,7 +10,6 @@ import { TickerPlugin } from '@pixi/ticker'; // TickerPlugin is the plugin for r
 Application.registerPlugin(TickerPlugin);
 
 Renderer.registerPlugin('interaction', InteractionManager);
-
 // // And just for convenience let's register Loader plugin in order to use it right from Application instance like app.loader.add(..) etc.
 // import { AppLoaderPlugin } from '@pixi/loaders';
 // Application.registerPlugin(AppLoaderPlugin);
@@ -52,18 +51,15 @@ document.body.appendChild(app.view);
 console.log('app.view', app.view);
 console.log('app.stage', app.stage, app.stage.width);
 console.log('app.renderer', app.renderer, app.renderer.width);
-console.log('Math.random()', Math.random());
 
-// Initialize the pixi Graphics class
-var graphics = new Graphics();
-// Set the fill color
-graphics.beginFill(0xe74c3c); // Red
-// Draw a circle
-graphics.drawCircle(60, 185, 40); // drawCircle(x, y, radius)
-// Applies fill to lines and shapes since the last call to beginFill.
-graphics.endFill();
-// Add the graphics to the stage
-app.stage.addChild(graphics);
+function makeCircle(x, y, r, fillcolor) {
+  var graphics = new Graphics();
+  graphics.beginFill(fillcolor);
+  graphics.drawCircle(x, y, r);
+  graphics.endFill();
+  return graphics;
+}
+app.stage.addChild(makeCircle(160, 285, 60, 0x874cac));
 
 var hexagonRadius = 60;
 var hexagonHeight = hexagonRadius * Math.sqrt(3);
@@ -73,16 +69,16 @@ for (var i = 0; i < 10; i++) {
     x: Math.floor(Math.random() * app.stage.width),
     y: Math.floor(Math.random() * app.stage.width),
   });
-  createBunny(hexaP.x, hexaP.y);
+  addHexagon(hexaP.x, hexaP.y);
 }
 
-function createBunny(x, y) {
-  console.log('createBunny', x, y);
+function addHexagon(x, y) {
+  //console.log('makeHexagon', x, y);
 
-  var bunny = new Graphics();
-  bunny.beginFill(0xff0000);
+  var hexagon = new Graphics();
+  hexagon.beginFill(0xff0000);
 
-  bunny.drawPolygon([
+  hexagon.drawPolygon([
     -hexagonRadius,
     0,
     -hexagonRadius / 2,
@@ -95,45 +91,30 @@ function createBunny(x, y) {
     -hexagonHeight / 2,
     -hexagonRadius / 2,
     -hexagonHeight / 2,
-    // -64, 128,             //First point
-    // 64, 128,              //Second point
-    // 0, 0
   ]);
 
-  bunny.endFill();
-  bunny.x = x;
-  bunny.y = y;
+  hexagon.endFill();
+  hexagon.x = x;
+  hexagon.y = y;
 
-  // var bunny = new PIXI.Circle(0,0, 60);
-  // bunny.mask = hexagon;
+  // enable interactive
+  hexagon.interactive = true;
 
-  // enable the bunny to be interactive... this will allow it to respond to mouse and touch events
-  bunny.interactive = true;
+  // hand cursor appears on hover
+  hexagon.buttonMode = true;
 
-  // this button mode will mean the hand cursor appears when you roll over the bunny with your mouse
-  bunny.buttonMode = true;
-
-  // center the bunny's anchor point
-  // bunny.anchor.set(0.5);
-
-  // make it a bit bigger, so it's easier to grab
-  // bunny.scale.set(3);
-
-  // setup events for mouse + touch using
-  // the pointer events
-  bunny
+  // setup events for mouse + touch using the pointer events
+  hexagon
     .on('pointerdown', onDragStart)
     .on('pointerup', onDragEnd)
     .on('pointerupoutside', onDragEnd)
     .on('pointermove', onDragMove);
 
-  // move the sprite to its designated position
-  bunny.x = x;
-  bunny.y = y;
+  hexagon.x = x;
+  hexagon.y = y;
 
   // add it to the stage
-  app.stage.addChild(bunny);
-  // app.stage.addChild(hexagon);
+  app.stage.addChild(hexagon);
 }
 
 function onDragStart(event) {
@@ -158,9 +139,6 @@ function onDragMove() {
     var hexaP = toHexagonPosition(newPosition);
     this.x = hexaP.x;
     this.y = hexaP.y;
-
-    // this.mask.x = this.x;
-    // this.mask.y = this.y;
   }
 }
 
