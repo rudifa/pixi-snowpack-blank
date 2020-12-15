@@ -9,12 +9,12 @@ Renderer.registerPlugin('batch', BatchRenderer);
 import { TickerPlugin } from '@pixi/ticker'; // TickerPlugin is the plugin for running an update loop (it's for the application class)
 Application.registerPlugin(TickerPlugin);
 
+import { InteractionManager } from '@pixi/interaction';
+
 Renderer.registerPlugin('interaction', InteractionManager);
 // // And just for convenience let's register Loader plugin in order to use it right from Application instance like app.loader.add(..) etc.
 // import { AppLoaderPlugin } from '@pixi/loaders';
 // Application.registerPlugin(AppLoaderPlugin);
-
-import { InteractionManager } from '@pixi/interaction';
 
 // Sprite is our image on the stage
 import { Sprite } from '@pixi/sprite';
@@ -22,14 +22,27 @@ import { Sprite } from '@pixi/sprite';
 const app = new Application({
   width: 600,
   height: 600,
-  //view: document.getElementById('canvas'),
   backgroundColor: 0x1099bb,
 });
+
+console.log('app', app);
+console.log('app.view', app.view);
+console.log('app.stage', app.stage, app.stage.width);
+console.log('app.renderer', app.renderer, app.renderer.width);
+console.log('app.renderer.plugins', app.renderer.plugins);
 
 // create a manager instance, passing stage and renderer.view
 // var manager = new InteractionManager(app.stage, app.renderer.view);
 //app.renderer.registerPlugin('interaction', InteractionManager);
 document.body.appendChild(app.view);
+
+app.renderer.view.addEventListener('click', function (e) {
+  console.log(e);
+});
+
+// not interacitive!
+// app.stage.on('pointerdown', onTouchDown);
+// app.stage.interactive = true;
 
 // code from https://codepen.io/rudifa/pen/qBarNLg
 
@@ -48,15 +61,18 @@ document.body.appendChild(app.view);
 // const stage = new PIXI.Container();
 // renderer.render(stage);
 
-console.log('app.view', app.view);
-console.log('app.stage', app.stage, app.stage.width);
-console.log('app.renderer', app.renderer, app.renderer.width);
-
 function makeCircle(x, y, r, fillcolor) {
   var graphics = new Graphics();
   graphics.beginFill(fillcolor);
   graphics.drawCircle(x, y, r);
   graphics.endFill();
+  graphics.interactive = true;
+  graphics.buttonMode = true;
+  graphics
+    .on('pointerdown', onDragStart)
+    .on('pointerup', onDragEnd)
+    .on('pointerupoutside', onDragEnd)
+    .on('pointermove', onDragMove_2);
   return graphics;
 }
 app.stage.addChild(makeCircle(160, 285, 60, 0x874cac));
@@ -97,10 +113,8 @@ function addHexagon(x, y) {
   hexagon.x = x;
   hexagon.y = y;
 
-  // enable interactive
+  // enable interactive and hand cursor on hover
   hexagon.interactive = true;
-
-  // hand cursor appears on hover
   hexagon.buttonMode = true;
 
   // setup events for mouse + touch using the pointer events
@@ -142,6 +156,19 @@ function onDragMove() {
   }
 }
 
+function onDragMove_2() {
+  if (this.dragging) {
+    var newPosition = this.data.getLocalPosition(this.parent);
+    console.log('onDragMove_2', this.x, this.y, newPosition);
+    this.x = newPosition.x;
+    this.y = newPosition.y;
+  }
+}
+
+function onTouchDown(e) {
+  console.log('onTouchDown', e);
+}
+
 function toHexagonPosition(p) {
   var newP = {};
   var xIdx = Math.round(p.x / (hexagonRadius * (3 / 2)));
@@ -152,6 +179,6 @@ function toHexagonPosition(p) {
   } else {
     newP.y = Math.round(p.y / hexagonHeight) * hexagonHeight;
   }
-
+  console.log('toHexagonPosition', p, newP);
   return newP;
 }

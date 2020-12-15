@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@pixi/graphics": "^5.3.4",
+    "@pixi/interaction": "^5.3.4",
     "canvas-confetti": "^1.2.0",
     "pixi.js": "^5.3.4"
   },
