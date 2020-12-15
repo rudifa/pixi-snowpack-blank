@@ -1,15 +1,36 @@
 import { Application } from '@pixi/app'; // WORKS
 // import { Application } from 'pixi.js'; // DOES NOT WORK
 import { Graphics } from '@pixi/graphics';
+import { Renderer } from '@pixi/core'; // Renderer is the class that is going to register plugins
+
+import { BatchRenderer } from '@pixi/core'; // BatchRenderer is the "plugin" for drawing sprites
+Renderer.registerPlugin('batch', BatchRenderer);
+
+import { TickerPlugin } from '@pixi/ticker'; // TickerPlugin is the plugin for running an update loop (it's for the application class)
+Application.registerPlugin(TickerPlugin);
+
+Renderer.registerPlugin('interaction', InteractionManager);
+
+// // And just for convenience let's register Loader plugin in order to use it right from Application instance like app.loader.add(..) etc.
+// import { AppLoaderPlugin } from '@pixi/loaders';
+// Application.registerPlugin(AppLoaderPlugin);
+
+import { InteractionManager } from '@pixi/interaction';
+
+// Sprite is our image on the stage
+import { Sprite } from '@pixi/sprite';
 
 const app = new Application({
-  width: 100,
-  height: 100,
-  view: document.getElementById('canvas'),
+  width: 600,
+  height: 600,
+  //view: document.getElementById('canvas'),
   backgroundColor: 0x1099bb,
 });
 
-//document.body.appendChild(app.view);
+// create a manager instance, passing stage and renderer.view
+// var manager = new InteractionManager(app.stage, app.renderer.view);
+//app.renderer.registerPlugin('interaction', InteractionManager);
+document.body.appendChild(app.view);
 
 // code from https://codepen.io/rudifa/pen/qBarNLg
 
@@ -28,20 +49,6 @@ const app = new Application({
 // const stage = new PIXI.Container();
 // renderer.render(stage);
 
-var hexagonRadius = 60;
-var hexagonHeight = hexagonRadius * Math.sqrt(3);
-
-// var app = new PIXI.Application(800, 600, { backgroundColor: 0x1099bb });
-// document.body.appendChild(app.view);
-
-// create a texture from an image path
-// var texture = Texture.fromImage(
-//   'https://pixijs.github.io/examples/required/assets/bunny.png',
-// );
-
-// // Scale mode for pixelation
-// texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-
 console.log('app.view', app.view);
 console.log('app.stage', app.stage, app.stage.width);
 console.log('app.renderer', app.renderer, app.renderer.width);
@@ -57,6 +64,9 @@ graphics.drawCircle(60, 185, 40); // drawCircle(x, y, radius)
 graphics.endFill();
 // Add the graphics to the stage
 app.stage.addChild(graphics);
+
+var hexagonRadius = 60;
+var hexagonHeight = hexagonRadius * Math.sqrt(3);
 
 for (var i = 0; i < 10; i++) {
   var hexaP = toHexagonPosition({
