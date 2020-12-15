@@ -2,23 +2,25 @@
 // import PIXI classes
 // -------------------
 
-import { Application } from '@pixi/app';
+import { Application, Graphics, Renderer, InteractionManager } from 'pixi.js';
 
-import { Graphics } from '@pixi/graphics';
+//import { Application } from '@pixi/app';
 
-// Renderer is the class that registers plugins
-import { Renderer } from '@pixi/core';
+// import { Graphics } from '@pixi/graphics';
+
+// // Renderer is the class that registers plugins
+// import { Renderer } from '@pixi/core';
 
 // BatchRenderer is the plugin for drawing sprites
-import { BatchRenderer } from '@pixi/core';
-Renderer.registerPlugin('batch', BatchRenderer);
+// import { BatchRenderer } from '@pixi/core';
+// Renderer.registerPlugin('batch', BatchRenderer);
 
 // TickerPlugin is the plugin for running an update loop (it's for the application class)
-import { TickerPlugin } from '@pixi/ticker';
-Application.registerPlugin(TickerPlugin);
+// import { TickerPlugin } from '@pixi/ticker';
+// Application.registerPlugin(TickerPlugin);
 
 // InteractionManager handles mouse events
-import { InteractionManager } from '@pixi/interaction';
+// import { InteractionManager } from '@pixi/interaction';
 Renderer.registerPlugin('interaction', InteractionManager);
 
 // Just for convenience let's register Loader plugin in order to use it right from Application instance like app.loader.add(..) etc.
@@ -220,8 +222,8 @@ goalBox.endFill();
 app.stage.addChild(playerBox);
 app.stage.addChild(goalBox);
 
-// Add the 'keydown' event listener to our document
-//document.addEventListener('keydown', onKeyDown);
+// Add the 'keydown' event listener to the document
+document.addEventListener('keydown', onKeyDown);
 
 // Spawn our target
 goalBoxSpawn();
