@@ -2,36 +2,38 @@
 // import PIXI classes
 // -------------------
 
-import { Application, Graphics, Renderer, InteractionManager } from 'pixi.js';
+//import { Application, Graphics, Renderer, InteractionManager } from 'pixi.js';
 
-//import { Application } from '@pixi/app';
+import { Application } from '@pixi/app';
 
-// import { Graphics } from '@pixi/graphics';
+import { Graphics } from '@pixi/graphics';
 
-// // Renderer is the class that registers plugins
-// import { Renderer } from '@pixi/core';
+// Renderer is the class that registers plugins
+import { Renderer } from '@pixi/core';
 
 // BatchRenderer is the plugin for drawing sprites
-// import { BatchRenderer } from '@pixi/core';
-// Renderer.registerPlugin('batch', BatchRenderer);
+import { BatchRenderer } from '@pixi/core';
+Renderer.registerPlugin('batch', BatchRenderer);
 
 // TickerPlugin is the plugin for running an update loop (it's for the application class)
 // import { TickerPlugin } from '@pixi/ticker';
 // Application.registerPlugin(TickerPlugin);
 
 // InteractionManager handles mouse events
-// import { InteractionManager } from '@pixi/interaction';
+import { InteractionManager } from '@pixi/interaction';
 Renderer.registerPlugin('interaction', InteractionManager);
 
 // Just for convenience let's register Loader plugin in order to use it right from Application instance like app.loader.add(..) etc.
 // import { AppLoaderPlugin } from '@pixi/loaders';
 // Application.registerPlugin(AppLoaderPlugin);
 
+import { Circle, makeCircle, makeHexagon, makeHexaGrid } from './hexa.js';
+
 // ------------------------------------
 // create Application and connect it up
 // ------------------------------------
 const app = new Application({
-  width: 700,
+  width: 1000,
   height: 700,
   backgroundColor: 0x304050,
 });
@@ -56,30 +58,46 @@ import { Sprite } from '@pixi/sprite';
 // app.stage.interactive = true;
 
 // -----------------------------------------
+// makeHexagon
+// -----------------------------------------
+app.stage.addChild(makeHexagon(40, 520, 40, false, 0xff0000, 0xffffff));
+app.stage.addChild(makeHexagon(120, 520, 40, false, 0x00ff00, 0xffffff));
+app.stage.addChild(makeHexagon(200, 520, 40, false, 0x0000ff, 0xffffff));
+
+//========================================================================
+// draw hexa grids
+
+let r = 20;
+
+for (let hexagon of makeHexaGrid(5, 6, 0, 0, r, true, null, 0x00ffaa)) {
+  app.stage.addChild(hexagon);
+}
+for (let hexagon of makeHexaGrid(
+  6,
+  5,
+  10 * r,
+  0,
+  r,
+  false,
+  0xffa500,
+  0xff0000,
+)) {
+  app.stage.addChild(hexagon);
+}
+
+// -----------------------------------------
 // TRY CIRCLE
 // -----------------------------------------
-function makeCircle(x, y, r, fillcolor) {
-  var graphics = new Graphics();
-  graphics.beginFill(fillcolor);
-  graphics.drawCircle(x, y, r);
-  graphics.endFill();
-  graphics.interactive = true;
-  graphics.buttonMode = true;
-  graphics
-    .on('pointerdown', onDragStart)
-    .on('pointerup', onDragEnd)
-    .on('pointerupoutside', onDragEnd)
-    .on('pointermove', onDragMove_2);
-  return graphics;
-}
+
 app.stage.addChild(makeCircle(160, 285, 60, 0x874cac));
+app.stage.addChild(new Circle(160, 400, 40, 0xffffff));
 
 // ----------------------------------------
 // DRAGGABLE HEXAGONS
 // from https://codepen.io/zeakd/pen/NdMBgB
 // ----------------------------------------
 
-var hexagonRadius = 60;
+var hexagonRadius = 30;
 var hexagonHeight = hexagonRadius * Math.sqrt(3);
 
 for (var i = 0; i < 10; i++) {
@@ -181,7 +199,7 @@ function toHexagonPosition(p) {
   } else {
     newP.y = Math.round(p.y / hexagonHeight) * hexagonHeight;
   }
-  console.log('toHexagonPosition', p, newP);
+  //console.log('toHexagonPosition', p, newP);
   return newP;
 }
 
@@ -262,13 +280,13 @@ function checkPosition() {
 }
 
 function onKeyDown(key) {
-  const keyCode = key.keyCode
-  const keysHandled = [ 87, 38, 83, 40, 65, 37, 68, 39]
+  const keyCode = key.keyCode;
+  const keysHandled = [87, 38, 83, 40, 65, 37, 68, 39];
 
-  if(key.cancelable && keysHandled.includes( keyCode)) {
+  if (key.cancelable && keysHandled.includes(keyCode)) {
     // Stops propagation of keypress event, to avoid having
     // the browser further handling it
-    key.preventDefault()
+    key.preventDefault();
   }
 
   // W Key is 87

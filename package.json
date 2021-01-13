@@ -1,16 +1,16 @@
 {
   "scripts": {
-    "start": "snowpack dev --polyfill-node ",
+    "start": "snowpack dev --polyfill-node",
     "build": "snowpack build",
     "test": "echo \"This template does not include a test runner by default.\" && exit 1",
     "format": "prettier --write \"src/**/*.js\"",
     "lint": "prettier --check \"src/**/*.js\""
   },
   "dependencies": {
+    "@pixi/app": "^5.3.4",
+    "@pixi/core": "^5.3.4",
     "@pixi/graphics": "^5.3.4",
-    "@pixi/interaction": "^5.3.4",
-    "canvas-confetti": "^1.2.0",
-    "pixi.js": "^5.3.4"
+    "@pixi/interaction": "^5.3.4"
   },
   "devDependencies": {
     "prettier": "^2.0.5",
